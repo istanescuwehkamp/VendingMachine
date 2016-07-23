@@ -13,6 +13,15 @@ namespace VendingMachine
             var result = vendingMachine.Deliver(Choice.Cola);
             Assert.AreEqual(null,result);
         }
+
+        [TestMethod]
+        public void ShouldReturnCola()
+        {
+            var vendingMachine=new VendingMachine();
+            vendingMachine.AddChoice(Choice.Cola);
+            var can = vendingMachine.Deliver(Choice.Cola);
+            Assert.AreEqual(Choice.Cola, can.Type);
+        }
     }
 
     public enum Choice
@@ -22,13 +31,25 @@ namespace VendingMachine
 
     public class VendingMachine
     {
-        public Can<Choice> Deliver(Choice cola)
+        private Choice? _choice;
+
+        public Can Deliver(Choice cola)
         {
-            return null;
+            if (_choice==null)
+            {
+                return null;
+            }
+            return new Can {Type = _choice.Value};
+        }
+
+        public void AddChoice(Choice cola)
+        {
+            _choice = cola;
         }
     }
 
-    public class Can<T>
+    public class Can
     {
+        public Choice Type { get; set; }
     }
 }
