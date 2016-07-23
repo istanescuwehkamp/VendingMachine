@@ -35,6 +35,21 @@ namespace VendingMachine
         }
     }
 
+    [TestClass]
+    public class InventoryTests
+    {
+        [TestMethod]
+        public void ShouldReturnNullWhenInvetoryIsEmpty()
+        {
+            var vendingMachine = new VendingMachine();
+            var choice = Choice.Cola;
+            vendingMachine.AddChoice(choice, 0);
+            var result = vendingMachine.Deliver(choice);
+
+            Assert.IsNull(result);
+        }
+    }
+
     public enum Choice
     {
         Cola,
@@ -54,9 +69,12 @@ namespace VendingMachine
             return new Can {Type = choice};
         }
 
-        public void AddChoice(Choice choice)
+        public void AddChoice(Choice choice, int quantity = int.MaxValue)
         {
-            _choices.Add(choice);
+            if (quantity > 0)
+            {
+                _choices.Add(choice);
+            }
         }
     }
 
