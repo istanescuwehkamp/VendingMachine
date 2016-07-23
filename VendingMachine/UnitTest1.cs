@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace VendingMachine
@@ -15,36 +16,47 @@ namespace VendingMachine
         }
 
         [TestMethod]
-        public void ShouldReturnCola()
+        public void ShouldReturnACan()
         {
             var vendingMachine=new VendingMachine();
             vendingMachine.AddChoice(Choice.Cola);
             var can = vendingMachine.Deliver(Choice.Cola);
-            Assert.AreEqual(Choice.Cola, can.Type);
+            Assert.IsNotNull(can);
+        }
+
+        [TestMethod]
+        public void ShouldReturnACanOfTheSelectedChoice()
+        {
+            var vendingMachine=new VendingMachine();
+            vendingMachine.AddChoice(Choice.Fanta);
+            vendingMachine.AddChoice(Choice.Cola);
+            var can = vendingMachine.Deliver(Choice.Fanta);
+            Assert.AreEqual(Choice.Fanta,can.Type);
         }
     }
 
     public enum Choice
     {
-        Cola
+        Cola,
+        Fanta
     }
 
     public class VendingMachine
     {
-        private Choice? _choice;
+        private List<Choice> _choices=new List<Choice>();
 
-        public Can Deliver(Choice cola)
+        public Can Deliver(Choice choice)
         {
-            if (_choice==null)
+            if (!_choices.Contains(choice))
             {
                 return null;
             }
-            return new Can {Type = _choice.Value};
+            return new Can {Type = choice};
         }
 
-        public void AddChoice(Choice cola)
+        public void AddChoice(Choice choice)
         {
-            _choice = cola;
+            _choices.Add(choice);
         }
     }
 
