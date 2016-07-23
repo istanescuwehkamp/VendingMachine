@@ -100,6 +100,16 @@ namespace VendingMachine
             var result = vendingMachine.Deliver(Choice.Cola);
             Assert.IsNull(result);
         }
+
+        [TestMethod]
+        public void ShouldReturnCanWhenCorrectAnountInserted()
+        {
+            var vendingMachine = new VendingMachine();
+            vendingMachine.AddChoice(Choice.Cola, 1, 2);
+            vendingMachine.InsertMoney(2);
+
+            var result = vendingMachine.Deliver(Choice.Cola);
+        }
     }
 
 
@@ -125,7 +135,7 @@ namespace VendingMachine
             return new Can {Type = choice};
         }
 
-        public void AddChoice(Choice choice, int quantity)
+        public void AddChoice(Choice choice, int quantity, decimal price = 1)
         {
             _choices.Add(choice, quantity);
         }
