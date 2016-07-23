@@ -48,6 +48,19 @@ namespace VendingMachine
 
             Assert.IsNull(result);
         }
+
+        [TestMethod]
+        public void ShouldReturnNullWhenInventoryIsEmptied()
+        {
+            var vendingMachine = new VendingMachine();
+            var choice = Choice.Cola;
+            vendingMachine.AddChoice(choice, 1);
+
+            vendingMachine.Deliver(choice);
+            var result = vendingMachine.Deliver(choice);
+
+            Assert.IsNull(result);
+        }
     }
 
     public enum Choice
@@ -58,23 +71,22 @@ namespace VendingMachine
 
     public class VendingMachine
     {
-        private List<Choice> _choices=new List<Choice>();
+        private readonly Dictionary<Choice, int> _choices = new Dictionary<Choice, int>();
 
         public Can Deliver(Choice choice)
         {
-            if (!_choices.Contains(choice))
+            if (!_choices.ContainsKey(choice) || _choices[choice] == 0)
             {
                 return null;
             }
+
+            _choices[choice] --;
             return new Can {Type = choice};
         }
 
         public void AddChoice(Choice choice, int quantity)
         {
-            if (quantity > 0)
-            {
-                _choices.Add(choice);
-            }
+            _choices.Add(choice, quantity);
         }
     }
 
