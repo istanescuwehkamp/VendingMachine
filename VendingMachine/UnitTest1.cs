@@ -73,7 +73,18 @@ namespace VendingMachine
             Assert.IsNull(result);
         }
 
+        [TestMethod]
+        public void ShouldNotAffectOtherStocksThanDelivered()
+        {
+            var vendingMachine = new VendingMachine();
+            vendingMachine.AddChoice(Choice.Cola, 1);
+            vendingMachine.AddChoice(Choice.Fanta, 1);
 
+            vendingMachine.Deliver(Choice.Cola);
+            var result = vendingMachine.GetStockCountFor(Choice.Fanta);
+
+            Assert.AreEqual(1, result);
+        }
     }
 
     public enum Choice
@@ -100,6 +111,11 @@ namespace VendingMachine
         public void AddChoice(Choice choice, int quantity)
         {
             _choices.Add(choice, quantity);
+        }
+
+        public int GetStockCountFor(Choice choice)
+        {
+            return _choices[choice];
         }
     }
 
