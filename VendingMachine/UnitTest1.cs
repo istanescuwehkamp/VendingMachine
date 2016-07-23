@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace VendingMachine
 {
     [TestClass]
-    public class VendingMachineTests
+    public class ChoiceTests
     {
         [TestMethod]
         public void ShouldReturnNothingIfEmpty()
@@ -44,17 +44,19 @@ namespace VendingMachine
     public class VendingMachine
     {
         private List<Choice> _choices=new List<Choice>();
+        private int amount;
 
         public Can Deliver(Choice choice)
         {
-            if (!_choices.Contains(choice))
+            if (!_choices.Contains(choice)||amount==0)
             {
                 return null;
             }
+            
             return new Can {Type = choice};
         }
 
-        public void AddChoice(Choice choice)
+        public void AddChoice(Choice choice, int i=int.MaxValue)
         {
             _choices.Add(choice);
         }
@@ -63,5 +65,27 @@ namespace VendingMachine
     public class Can
     {
         public Choice Type { get; set; }
+    }
+
+    [TestClass]
+    public class InventoryTests
+    {
+        [TestMethod]
+        public void ShouldReturnNoCanIfRackIsEmpty()
+        {
+            var vendingMachine=new VendingMachine();
+            vendingMachine.AddChoice(Choice.Cola,0);
+            var can = vendingMachine.Deliver(Choice.Cola);
+            Assert.IsNull(can);
+        }
+
+        [TestMethod]
+        public void ShouldReturnACanIfRackIsNotEmpty()
+        {
+            var vendingMachine = new VendingMachine();
+            vendingMachine.AddChoice(Choice.Cola,1);
+            var can = vendingMachine.Deliver(Choice.Cola);
+            Assert.IsNotNull(can);
+        }
     }
 }
