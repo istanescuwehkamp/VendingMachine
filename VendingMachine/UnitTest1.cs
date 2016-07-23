@@ -19,7 +19,7 @@ namespace VendingMachine
         public void ShouldReturnACan()
         {
             var vendingMachine=new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola);
+            vendingMachine.AddChoice(Choice.Cola, 1);
             var can = vendingMachine.Deliver(Choice.Cola);
             Assert.IsNotNull(can);
         }
@@ -28,8 +28,8 @@ namespace VendingMachine
         public void ShouldReturnACanOfTheSelectedChoice()
         {
             var vendingMachine=new VendingMachine();
-            vendingMachine.AddChoice(Choice.Fanta);
-            vendingMachine.AddChoice(Choice.Cola);
+            vendingMachine.AddChoice(Choice.Fanta, 1);
+            vendingMachine.AddChoice(Choice.Cola, 1);
             var can = vendingMachine.Deliver(Choice.Fanta);
             Assert.AreEqual(Choice.Fanta,can.Type);
         }
@@ -69,7 +69,7 @@ namespace VendingMachine
             return new Can {Type = choice};
         }
 
-        public void AddChoice(Choice choice, int quantity = int.MaxValue)
+        public void AddChoice(Choice choice, int quantity)
         {
             if (quantity > 0)
             {
