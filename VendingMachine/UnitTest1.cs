@@ -4,11 +4,31 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace VendingMachine
 {
     [TestClass]
-    public class UnitTest1
+    public class VendingMachineTests
     {
         [TestMethod]
-        public void TestMethod1()
+        public void ShouldReturnNothingIfEmpty()
         {
+            var vendingMachine = new VendingMachine();
+            var result = vendingMachine.Deliver(Choice.Cola);
+            Assert.AreEqual(null,result);
         }
+    }
+
+    public enum Choice
+    {
+        Cola
+    }
+
+    public class VendingMachine
+    {
+        public Can<Choice> Deliver(Choice cola)
+        {
+            return null;
+        }
+    }
+
+    public class Can<T>
+    {
     }
 }
