@@ -87,6 +87,22 @@ namespace VendingMachine
         }
     }
 
+    [TestClass]
+    public class PaymentTests
+    {
+        [TestMethod]
+        public void ShouldReturnNoCanWhenNoMoneyInserted()
+        {
+            var vendingMachine = new VendingMachine();
+            vendingMachine.AddChoice(Choice.Cola, 1);
+            vendingMachine.InsertMoney(0);
+
+            var result = vendingMachine.Deliver(Choice.Cola);
+            Assert.IsNull(result);
+        }
+    }
+
+
     public enum Choice
     {
         Cola,
@@ -96,10 +112,11 @@ namespace VendingMachine
     public class VendingMachine
     {
         private readonly Dictionary<Choice, int> _choices = new Dictionary<Choice, int>();
+        private decimal _money = 0;
 
         public Can Deliver(Choice choice)
         {
-            if (!_choices.ContainsKey(choice) || _choices[choice] == 0)
+            if (!_choices.ContainsKey(choice) || _choices[choice] == 0 || _money <= 0)
             {
                 return null;
             }
@@ -116,6 +133,11 @@ namespace VendingMachine
         public int GetStockCountFor(Choice choice)
         {
             return _choices[choice];
+        }
+
+        public void InsertMoney(decimal amount)
+        {
+            _money = amount;
         }
     }
 
