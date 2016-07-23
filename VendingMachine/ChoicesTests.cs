@@ -78,13 +78,30 @@ namespace VendingMachine
         public void MutipleChoicesReturnCorrectAmmount()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola, 2);
-            vendingMachine.AddChoice(Choice.Fanta, 1);
+            vendingMachine.AddChoice(Choice.Cola, 1);
+            vendingMachine.AddChoice(Choice.Fanta, 0);
 
-            vendingMachine.Deliver(Choice.Cola);
+            //vendingMachine.Deliver(Choice.Cola);
             var result = vendingMachine.Deliver(Choice.Cola);
 
             Assert.IsNotNull(result);
+        }
+
+
+    }
+
+    [TestClass]
+    public class CreditTests
+    {
+        [TestMethod]
+        public void ShouldReturnNullWhenRequestingAProductWithPrice()
+        {
+            var vendingMachine = new VendingMachine();
+            vendingMachine.AddChoice(Choice.Cola, 1, 10);
+
+            var result = vendingMachine.Deliver(Choice.Cola);
+
+            Assert.IsNull(result);
         }
     }
 
@@ -96,30 +113,33 @@ namespace VendingMachine
 
     public class VendingMachine
     {
-        private List<Choice> _choices=new List<Choice>();
-        private int _rackAmount;
+        private Dictionary<Choice, int> _choices=new Dictionary<Choice, int>();
+        private int _priceAmount;
 
         public Can Deliver(Choice choice)
         {
-            if (!_choices.Contains(choice))
+            if (!_choices.ContainsKey(choice))
             {
                 return null;
             }
 
-            if(_rackAmount == 0)
+            if(_choices[choice] == 0)
             {
                 return null;
             }
 
-            _rackAmount--;
+            _choices[choice]--;
 
             return new Can {Type = choice};
         }
 
-        public void AddChoice(Choice choice, int amount = Int32.MaxValue)
+        public void AddChoice(Choice choice, int amount = Int32.MaxValue, int price = 0)
         {
-            _rackAmount = amount;
-            _choices.Add(choice);
+            if (price == 0)
+            {
+                _priceAmount = price;
+                _choices.Add(choice, amount);
+            }
         }
     }
 
