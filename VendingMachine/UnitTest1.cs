@@ -61,6 +61,19 @@ namespace VendingMachine
 
             Assert.IsNull(result);
         }
+
+        [TestMethod]
+        public void ShouldReturnNullWhenChoiceNotAdded()
+        {
+            var vendingMachine = new VendingMachine();
+            vendingMachine.AddChoice(Choice.Cola, 1);
+            
+            var result = vendingMachine.Deliver(Choice.Fanta);
+
+            Assert.IsNull(result);
+        }
+
+
     }
 
     public enum Choice
