@@ -7,11 +7,14 @@ namespace VendingMachine
     [TestClass]
     public class VendingMachineTests
     {
+        private int _colaChoice = 0;
+        private int _fantaChoice = 1;
+
         [TestMethod]
         public void ShouldReturnNothingIfEmpty()
         {
             var vendingMachine = new VendingMachine();
-            var result = vendingMachine.Deliver(Choice.Cola);
+            var result = vendingMachine.Deliver(_colaChoice);
             Assert.AreEqual(null, result);
         }
 
@@ -19,8 +22,8 @@ namespace VendingMachine
         public void ShouldReturnACan()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola);
-            var can = vendingMachine.Deliver(Choice.Cola);
+            vendingMachine.AddChoice(_colaChoice);
+            var can = vendingMachine.Deliver(_colaChoice);
             Assert.IsNotNull(can);
         }
 
@@ -28,19 +31,19 @@ namespace VendingMachine
         public void ShouldReturnACanOfTheSelectedChoice()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Fanta);
-            vendingMachine.AddChoice(Choice.Cola);
-            var can = vendingMachine.Deliver(Choice.Fanta);
-            Assert.AreEqual(Choice.Fanta, can.Type);
+            vendingMachine.AddChoice(_fantaChoice);
+            vendingMachine.AddChoice(_colaChoice);
+            var can = vendingMachine.Deliver(_fantaChoice);
+            Assert.AreEqual(_fantaChoice, can.Type);
         }
 
         [TestMethod]
         public void ShouldSetTheInventoryCorrectly()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola, 1);
-            vendingMachine.Deliver(Choice.Cola);
-            var can = vendingMachine.Deliver(Choice.Cola);
+            vendingMachine.AddChoice(_colaChoice, 1);
+            vendingMachine.Deliver(_colaChoice);
+            var can = vendingMachine.Deliver(_colaChoice);
             Assert.IsNull(can);
         }
 
@@ -48,7 +51,7 @@ namespace VendingMachine
         public void ShouldHaveTotalZeroInitialy()
         {
             var vendingMachine = new VendingMachine();
-            Assert.AreEqual(0, vendingMachine.Total);
+            Assert.AreEqual(0, vendingMachine.T);
         }
 
         [TestMethod]
@@ -56,7 +59,7 @@ namespace VendingMachine
         {
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
-            Assert.AreEqual(5, vendingMachine.Total);
+            Assert.AreEqual(5, vendingMachine.T);
         }
 
         [TestMethod]
@@ -65,7 +68,7 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
             vendingMachine.AddCoin(1);
-            Assert.AreEqual(6, vendingMachine.Total);
+            Assert.AreEqual(6, vendingMachine.T);
         }
 
         [TestMethod]
@@ -83,16 +86,16 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
             vendingMachine.PayOutChange();
-            Assert.AreEqual(0, vendingMachine.Total);
+            Assert.AreEqual(0, vendingMachine.T);
         }
 
         [TestMethod]
         public void ShouldAcceptCostForOption()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola, 5);
-            vendingMachine.AddPrice(Choice.Cola, 5.5);
-            var colaPrice = vendingMachine.GetPrice(Choice.Cola);
+            vendingMachine.AddChoice(_colaChoice, 5);
+            vendingMachine.AddPrice(_colaChoice, 5.5);
+            var colaPrice = vendingMachine.GetPrice(_colaChoice);
             Assert.AreEqual(5.5, colaPrice);
         }
 
@@ -100,12 +103,12 @@ namespace VendingMachine
         public void ShouldAcceptDifferentCostsForOptions()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola, 5);
-            vendingMachine.AddPrice(Choice.Cola, 5.5);
-            vendingMachine.AddChoice(Choice.Fanta, 5);
-            vendingMachine.AddPrice(Choice.Fanta, 2.5);
-            var colaPrice = vendingMachine.GetPrice(Choice.Cola);
-            var fantaPrice = vendingMachine.GetPrice(Choice.Fanta);
+            vendingMachine.AddChoice(_colaChoice, 5);
+            vendingMachine.AddPrice(_colaChoice, 5.5);
+            vendingMachine.AddChoice(_fantaChoice, 5);
+            vendingMachine.AddPrice(_fantaChoice, 2.5);
+            var colaPrice = vendingMachine.GetPrice(_colaChoice);
+            var fantaPrice = vendingMachine.GetPrice(_fantaChoice);
             Assert.AreEqual(5.5, colaPrice);
             Assert.AreEqual(2.5, fantaPrice);
         }
@@ -114,10 +117,10 @@ namespace VendingMachine
         public void ShouldGiveProductIfPriceIsLessThanBalance()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola, 5);
-            vendingMachine.AddPrice(Choice.Cola, 3);
+            vendingMachine.AddChoice(_colaChoice, 5);
+            vendingMachine.AddPrice(_colaChoice, 3);
             vendingMachine.AddCoin(5);
-            var colaCan = vendingMachine.Deliver(Choice.Cola);
+            var colaCan = vendingMachine.Deliver(_colaChoice);
             Assert.IsNotNull(colaCan);
         }
 
@@ -125,20 +128,20 @@ namespace VendingMachine
         public void ShouldSubstractPriceFromBalance()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola, 5);
-            vendingMachine.AddPrice(Choice.Cola, 3);
+            vendingMachine.AddChoice(_colaChoice, 5);
+            vendingMachine.AddPrice(_colaChoice, 3);
             vendingMachine.AddCoin(5);
-            vendingMachine.Deliver(Choice.Cola);
-            Assert.AreEqual(2, vendingMachine.Total);
+            vendingMachine.Deliver(_colaChoice);
+            Assert.AreEqual(2, vendingMachine.T);
         }
 
         [TestMethod]
         public void ShouldNotReturnCanIfBalanceLowerThanCost()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola);
-            vendingMachine.AddPrice(Choice.Cola, 2.5);
-            var can = vendingMachine.Deliver(Choice.Cola);
+            vendingMachine.AddChoice(_colaChoice);
+            vendingMachine.AddPrice(_colaChoice, 2.5);
+            var can = vendingMachine.Deliver(_colaChoice);
             Assert.IsNull(can);
         }
 
@@ -146,10 +149,10 @@ namespace VendingMachine
         public void ShouldAcceptCardAsPaymentMethod()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola);
-            vendingMachine.AddPrice(Choice.Cola, 0);
+            vendingMachine.AddChoice(_colaChoice);
+            vendingMachine.AddPrice(_colaChoice, 0);
             vendingMachine.AcceptCard(new CreditCard("holder name", "serial number", "card company", 1234));
-            vendingMachine.SelectChoiceForCard(Choice.Cola);
+            vendingMachine.SelectChoiceForCard(_colaChoice);
             vendingMachine.GetPinNumber(1234);
             Can colaCan = vendingMachine.DeliverChoiceForCard();
             Assert.IsNotNull(colaCan);
@@ -159,10 +162,10 @@ namespace VendingMachine
         public void ShouldFailForInvalidPin()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola);
-            vendingMachine.AddPrice(Choice.Cola, 2.3);
+            vendingMachine.AddChoice(_colaChoice);
+            vendingMachine.AddPrice(_colaChoice, 2.3);
             vendingMachine.AcceptCard(new CreditCard("holder name", "serial number", "card company", 1234));
-            vendingMachine.SelectChoiceForCard(Choice.Cola);
+            vendingMachine.SelectChoiceForCard(_colaChoice);
             vendingMachine.GetPinNumber(3456);
             Can colaCan = vendingMachine.DeliverChoiceForCard();
             Assert.IsNull(colaCan);
@@ -172,14 +175,14 @@ namespace VendingMachine
         public void ShouldReturnTheCorrectChoiceWhenPayingByCard()
         {
             var vendingMachine=new VendingMachine();
-            vendingMachine.AddChoice(Choice.Cola);
-            vendingMachine.AddChoice(Choice.Fanta);
-            vendingMachine.AddPrice(Choice.Cola, 2.3);
+            vendingMachine.AddChoice(_colaChoice);
+            vendingMachine.AddChoice(_fantaChoice);
+            vendingMachine.AddPrice(_colaChoice, 2.3);
             vendingMachine.AcceptCard(new CreditCard("holder name", "serial number", "card company", 1234));
-            vendingMachine.SelectChoiceForCard(Choice.Fanta);
+            vendingMachine.SelectChoiceForCard(_fantaChoice);
             vendingMachine.GetPinNumber(1234);
             Can colaCan = vendingMachine.DeliverChoiceForCard();
-            Assert.AreEqual(Choice.Fanta,colaCan.Type);
+            Assert.AreEqual(_fantaChoice,colaCan.Type);
         }
     }
 }
