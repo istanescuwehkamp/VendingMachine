@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using CreditCardModule;
 
 namespace VendingMachine
@@ -7,7 +8,8 @@ namespace VendingMachine
     public class VendingMachine
     {
         private List<int> _choices = new List<int>();
-        private Dictionary<int, int> _quantities = new Dictionary<int, int>();
+        private int[] _quantityKeys = {};
+        private int[] _quantityValues = {};
         private double t;
         private double _colaPrice;
         private Dictionary<int, double> _prices = new Dictionary<int, double>();
@@ -17,21 +19,29 @@ namespace VendingMachine
 
         public double T { get { return t; } }
 
+        public VendingMachine()
+        {
+        }
+
         public Can Deliver(int value)
         {
             var price = _prices.ContainsKey(value) ? _prices[value] : 0;
-            if (!_choices.Contains(value) || _quantities[value] < 1 || t < price)
+            if (!_choices.Contains(value) || _quantityValues[Array.IndexOf(_quantityKeys, value)] < 1 || t < price)
             {
                 return null;
             }
-            _quantities[value] -= 1;
+
+            _quantityValues[Array.IndexOf(_quantityKeys, value)] = _quantityValues[Array.IndexOf(_quantityKeys, value)]-1;
             t -= price;
             return new Can { Type = value };
         }
 
         public void AddChoice(int c, int n = int.MaxValue)
         {
-            _quantities.Add(c, n);
+            Array.Resize(ref _quantityKeys, _quantityKeys.Length + 1);
+            Array.Resize(ref _quantityValues, _quantityValues.Length + 1);
+            _quantityKeys[_quantityKeys.Length - 1] = c;
+            _quantityValues[_quantityValues.Length - 1] = n;
             _choices.Add(c);
         }
 
@@ -75,9 +85,9 @@ namespace VendingMachine
         public Can DeliverChoiceForCard()
         {
             var c = ccc;
-            if (_valid && _choices.IndexOf(c) > -1 && _quantities[c] > 0)
+            if (_valid && _choices.IndexOf(c) > -1 && _quantityValues[Array.IndexOf(_quantityKeys, c)] > 0)
             {
-                _quantities[c] -= 1;
+                _quantityValues[Array.IndexOf(_quantityKeys, c)] = _quantityValues[Array.IndexOf(_quantityKeys, c)]-1;
                 return new Can {Type = c};
             }
             else
