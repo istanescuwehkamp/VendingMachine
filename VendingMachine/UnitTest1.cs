@@ -31,8 +31,7 @@ namespace VendingMachine
         public void ShouldReturnACanOfTheSelectedChoice()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(_fantaChoice);
-            vendingMachine.AddChoice(_colaChoice);
+            vendingMachine.AddMultipleChoices(new int[] {_fantaChoice,_colaChoice}, new []{int.MaxValue, int.MaxValue} );
             var can = vendingMachine.Deliver(_fantaChoice);
             Assert.AreEqual(_fantaChoice, can.Type);
         }
@@ -76,7 +75,7 @@ namespace VendingMachine
         {
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
-            var change = vendingMachine.PayOutChange();
+            var change = vendingMachine.Change();
             Assert.AreEqual(5, change);
         }
 
@@ -85,7 +84,7 @@ namespace VendingMachine
         {
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
-            vendingMachine.PayOutChange();
+            vendingMachine.Change();
             Assert.AreEqual(0, vendingMachine.T);
         }
 
@@ -93,8 +92,7 @@ namespace VendingMachine
         public void ShouldAcceptCostForOption()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(_colaChoice, 5);
-            vendingMachine.AddPrice(_colaChoice, 5.5);
+            vendingMachine.AddChoiceAndPrice(_colaChoice,5,5.5);
             var colaPrice = vendingMachine.GetPrice(_colaChoice);
             Assert.AreEqual(5.5, colaPrice);
         }
@@ -103,10 +101,8 @@ namespace VendingMachine
         public void ShouldAcceptDifferentCostsForOptions()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(_colaChoice, 5);
-            vendingMachine.AddPrice(_colaChoice, 5.5);
-            vendingMachine.AddChoice(_fantaChoice, 5);
-            vendingMachine.AddPrice(_fantaChoice, 2.5);
+            vendingMachine.AddChoiceAndPrice(_colaChoice,5,5.5);
+            vendingMachine.AddChoiceAndPrice(_fantaChoice,5,2.5);
             var colaPrice = vendingMachine.GetPrice(_colaChoice);
             var fantaPrice = vendingMachine.GetPrice(_fantaChoice);
             Assert.AreEqual(5.5, colaPrice);
@@ -128,8 +124,7 @@ namespace VendingMachine
         public void ShouldSubstractPriceFromBalance()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddChoice(_colaChoice, 5);
-            vendingMachine.AddPrice(_colaChoice, 3);
+            vendingMachine.AddChoiceAndPrice(_colaChoice,5,3);
             vendingMachine.AddCoin(5);
             vendingMachine.Deliver(_colaChoice);
             Assert.AreEqual(2, vendingMachine.T);

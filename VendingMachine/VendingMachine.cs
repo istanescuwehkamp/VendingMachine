@@ -45,12 +45,25 @@ namespace VendingMachine
             _choices.Add(c);
         }
 
+        public void AddMultipleChoices(int[] choices, int[] counts)
+        {
+            for (int i = 0; i < choices.Length; i++)
+            {
+                int c = choices[i];
+                Array.Resize(ref _quantityKeys, _quantityKeys.Length + 1);
+                Array.Resize(ref _quantityValues, _quantityValues.Length + 1);
+                _quantityKeys[_quantityKeys.Length - 1] = c;
+                _quantityValues[_quantityValues.Length - 1] = counts[i];
+                _choices.Add(c);
+            }
+        }
+
         public void AddCoin(int v)
         {
             t += v;
         }
 
-        public double PayOutChange()
+        public double Change()
         {
             var v = t;
             t = 0;
@@ -61,6 +74,17 @@ namespace VendingMachine
         {
             _prices[i] = v;
         }
+
+        public void Stock(int choice, int quantity, double price)
+        {
+            Array.Resize(ref _quantityKeys, _quantityKeys.Length + 1);
+            Array.Resize(ref _quantityValues, _quantityValues.Length + 1);
+            _quantityKeys[_quantityKeys.Length - 1] = choice;
+            _quantityValues[_quantityValues.Length - 1] = quantity;
+            _choices.Add(choice);
+            _prices[choice] = price;
+        }
+
 
         public double GetPrice(int choice)
         {
