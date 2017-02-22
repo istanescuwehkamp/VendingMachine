@@ -8,37 +8,37 @@ namespace VendingMachine
     public class VendingMachine
     {
         private List<int> _choices = new List<int>();
-        private int[] _quantityKeys = { };
-        private int[] _quantityValues = { };
         private double _total;
         private double _colaPrice;
         private Dictionary<int, double> _prices = new Dictionary<int, double>();
         private CreditCard _creditCard;
         private bool _valid;
         private int _choiceForCard;
+        private readonly ChoiceDictionary _choiceDictionary;
 
         public double Total { get { return _total; } }
 
         public VendingMachine()
         {
+            _choiceDictionary = new ChoiceDictionary();
         }
 
         public Can Deliver(int quantityKey)
         {
             var price = _prices.ContainsKey(quantityKey) ? _prices[quantityKey] : 0;
-            if (!_choices.Contains(quantityKey) || GetValue(quantityKey) < 1 || _total < price)
+            if (!_choices.Contains(quantityKey) || _choiceDictionary.GetValue(quantityKey) < 1 || _total < price)
             {
                 return null;
             }
 
-            SetValue(quantityKey, GetValue(quantityKey) - 1);
+            _choiceDictionary.SetValue(quantityKey, _choiceDictionary.GetValue(quantityKey) - 1);
             _total -= price;
             return new Can { Type = quantityKey };
         }
 
         public void AddChoice(int c, int n = int.MaxValue)
         {
-            Add(c, n);
+            _choiceDictionary.Add(c, n);
             _choices.Add(c);
         }
 
@@ -47,7 +47,7 @@ namespace VendingMachine
             for (int i = 0; i < choices.Length; i++)
             {
                 int c = choices[i];
-                Add(c, counts[i]);
+                _choiceDictionary.Add(c, counts[i]);
                 _choices.Add(c);
             }
         }
@@ -71,7 +71,7 @@ namespace VendingMachine
 
         public void Stock(int choice, int quantity, double price)
         {
-            Add(choice, quantity);
+            _choiceDictionary.Add(choice, quantity);
             _choices.Add(choice);
             _prices[choice] = price;
         }
@@ -100,36 +100,14 @@ namespace VendingMachine
 
         public Can DeliverChoiceForCard()
         {
-            if (_valid && _choices.IndexOf(_choiceForCard) > -1 && GetValue(_choiceForCard) > 0)
+            if (_valid && _choices.IndexOf(_choiceForCard) > -1 && _choiceDictionary.GetValue(_choiceForCard) > 0)
             {
-                SetValue(_choiceForCard, GetValue(_choiceForCard) - 1);
+                _choiceDictionary.SetValue(_choiceForCard, _choiceDictionary.GetValue(_choiceForCard) - 1);
 
                 return new Can { Type = _choiceForCard };
             }
             return null;
         }
-
-        private int GetValue(int quantityKey)
-        {
-            return _quantityValues[GetKeyIndex(quantityKey)];
-        }
-
-        private int GetKeyIndex(int quantityKey)
-        {
-            return Array.IndexOf(_quantityKeys, quantityKey);
-        }
-        private void SetValue(int quantityKey, int quantityValue)
-        {
-            _quantityValues[GetKeyIndex(quantityKey)] = quantityValue;
-        }
-        private void Add(int key, int value)
-        {
-            Array.Resize(ref _quantityKeys, _quantityKeys.Length + 1);
-            Array.Resize(ref _quantityValues, _quantityValues.Length + 1);
-            _quantityKeys[_quantityKeys.Length - 1] = key;
-            _quantityValues[_quantityValues.Length - 1] = value;
-        }
-
     }
 
     public class Can
