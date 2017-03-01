@@ -2,7 +2,7 @@ namespace CreditCardModule
 {
     public class CreditCardModule
     {
-        private CreditCard _creditCard;
+        private readonly CreditCard _creditCard;
 
         public CreditCardModule(CreditCard creditCard)
         {

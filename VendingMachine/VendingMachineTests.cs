@@ -1,5 +1,4 @@
-﻿using System;
-using CreditCardModule;
+﻿using CreditCardModule;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace VendingMachine
@@ -50,7 +49,7 @@ namespace VendingMachine
         public void ShouldHaveTotalZeroInitialy()
         {
             var vendingMachine = new VendingMachine();
-            Assert.AreEqual(0, vendingMachine.T);
+            Assert.AreEqual(0, vendingMachine.TotalAmount);
         }
 
         [TestMethod]
@@ -58,7 +57,7 @@ namespace VendingMachine
         {
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
-            Assert.AreEqual(5, vendingMachine.T);
+            Assert.AreEqual(5, vendingMachine.TotalAmount);
         }
 
         [TestMethod]
@@ -67,7 +66,7 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
             vendingMachine.AddCoin(1);
-            Assert.AreEqual(6, vendingMachine.T);
+            Assert.AreEqual(6, vendingMachine.TotalAmount);
         }
 
         [TestMethod]
@@ -85,7 +84,7 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
             vendingMachine.Change();
-            Assert.AreEqual(0, vendingMachine.T);
+            Assert.AreEqual(0, vendingMachine.TotalAmount);
         }
 
         [TestMethod]
@@ -127,7 +126,7 @@ namespace VendingMachine
             vendingMachine.Stock(_colaChoice,5,3);
             vendingMachine.AddCoin(5);
             vendingMachine.Deliver(_colaChoice);
-            Assert.AreEqual(2, vendingMachine.T);
+            Assert.AreEqual(2, vendingMachine.TotalAmount);
         }
 
         [TestMethod]
@@ -146,7 +145,7 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddChoice(_colaChoice);
             vendingMachine.AddPrice(_colaChoice, 0);
-            vendingMachine.AcceptCard(new CreditCard("holder name", "serial number", "card company", 1234));
+            vendingMachine.AcceptCard(new CreditCard(1234));
             vendingMachine.SelectChoiceForCard(_colaChoice);
             vendingMachine.GetPinNumber(1234);
             Can colaCan = vendingMachine.DeliverChoiceForCard();
@@ -159,7 +158,7 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddChoice(_colaChoice);
             vendingMachine.AddPrice(_colaChoice, 2.3);
-            vendingMachine.AcceptCard(new CreditCard("holder name", "serial number", "card company", 1234));
+            vendingMachine.AcceptCard(new CreditCard(1234));
             vendingMachine.SelectChoiceForCard(_colaChoice);
             vendingMachine.GetPinNumber(3456);
             Can colaCan = vendingMachine.DeliverChoiceForCard();
@@ -173,7 +172,7 @@ namespace VendingMachine
             vendingMachine.AddChoice(_colaChoice);
             vendingMachine.AddChoice(_fantaChoice);
             vendingMachine.AddPrice(_colaChoice, 2.3);
-            vendingMachine.AcceptCard(new CreditCard("holder name", "serial number", "card company", 1234));
+            vendingMachine.AcceptCard(new CreditCard(1234));
             vendingMachine.SelectChoiceForCard(_fantaChoice);
             vendingMachine.GetPinNumber(1234);
             Can colaCan = vendingMachine.DeliverChoiceForCard();

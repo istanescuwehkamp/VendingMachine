@@ -2,14 +2,10 @@
 {
     public class CreditCard
     {
-        private string _holderName;
-        private string _serialNumber;
-        private int _pinNumber;
+        private readonly int _pinNumber;
 
-        public CreditCard(string holderName, string serialNumber, string cardCompany, int pinNumber)
+        public CreditCard(int pinNumber)
         {
-            _holderName = holderName;
-            _serialNumber = serialNumber;
             _pinNumber = pinNumber;
         }
 
